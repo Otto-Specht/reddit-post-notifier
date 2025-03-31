@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"os"
 )
 
 type LogLevel int
@@ -11,6 +12,7 @@ const (
 	INFO
 	WARN
 	ERROR
+	FATAL
 )
 
 func (l LogLevel) String() string {
@@ -23,6 +25,8 @@ func (l LogLevel) String() string {
 		return "WRN"
 	case ERROR:
 		return "ERR"
+	case FATAL:
+		return "FTL"
 	default:
 		return "UKN"
 	}
@@ -37,6 +41,8 @@ func color(l LogLevel) string {
 	case WARN:
 		return "\033[33m"
 	case ERROR:
+		return "\033[31m"
+	case FATAL:
 		return "\033[31m"
 	default:
 		return ""
@@ -61,4 +67,9 @@ func Warn(msg string) {
 
 func Error(msg string) {
 	log(ERROR, msg)
+}
+
+func FatalAndExit(msg string) {
+	log(ERROR, msg)
+	os.Exit(1)
 }
