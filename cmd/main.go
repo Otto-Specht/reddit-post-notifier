@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
 )
@@ -14,8 +15,15 @@ func main() {
 	util.LoadEnv()
 
 	userNames := GetUserNames()
+	logger.Debug("Users: " + strings.Join(userNames, ", "))
 
-	logger.Debug("User names: " + strings.Join(userNames, ", "))
+	clientId := os.Getenv("CLIENT_ID")
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	if clientId == "" || clientSecret == "" {
+		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
+	}
+	api.GenerateAccessToken(clientId, clientSecret)
+
 }
 
 func GetUserNames() []string {
