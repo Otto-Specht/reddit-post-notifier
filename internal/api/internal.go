@@ -67,3 +67,15 @@ func refreshTokenIfNeeded() {
 		generateNewAccessToken()
 	}
 }
+
+func buildRequest(method string, url string, body io.Reader) *http.Request {
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		logger.FatalAndExit(fmt.Sprintf("Failed to create http request. Error: %s", err))
+	}
+
+	req.Header.Set("User-Agent", "PostNotifier/1.0")
+	req.Header.Set("Authorization", "Bearer "+api.AccessToken)
+
+	return req
+}

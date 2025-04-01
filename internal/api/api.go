@@ -21,11 +21,7 @@ func CheckIfUsersExistOrRemove(userList []string) []string {
 	existingUserList := []string{}
 
 	for _, value := range userList {
-		req, err := http.NewRequest("GET", "https://www.reddit.com/user/"+value+"/about.json", nil)
-		if err != nil {
-			logger.FatalAndExit(err.Error())
-		}
-		req.Header.Set("Authorization", api.AccessToken)
+		req := buildRequest("GET", "https://oauth.reddit.com/user/"+value+"/about.json", nil)
 		resp, err := api.httpClient.Do(req)
 		if err != nil {
 			logger.FatalAndExit(err.Error())
@@ -43,7 +39,7 @@ func CheckIfUsersExistOrRemove(userList []string) []string {
 				logger.FatalAndExit(err.Error())
 			}
 
-			logger.Info(fmt.Sprintf("Adding user %s (Karma: %v)", userAboutResponse.Data.Name, userAboutResponse.Data.TotalKarma))
+			logger.Info(fmt.Sprintf("Adding user u/%s (Karma: %v)", userAboutResponse.Data.Name, userAboutResponse.Data.TotalKarma))
 
 			existingUserList = append(existingUserList, userAboutResponse.Data.Name)
 		} else {

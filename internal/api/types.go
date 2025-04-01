@@ -21,5 +21,5 @@ type UserAbout struct {
 
 type UserAboutData struct {
 	Name       string `json:"name"`
-	TotalKarma string `json:"total_karma"`
+	TotalKarma int64  `json:"total_karma"`
 }
