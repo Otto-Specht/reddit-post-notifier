@@ -69,6 +69,8 @@ func refreshTokenIfNeeded() {
 }
 
 func buildRequest(method string, url string, body io.Reader) *http.Request {
+	refreshTokenIfNeeded()
+
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		logger.FatalAndExit(fmt.Sprintf("Failed to create http request. Error: %s", err))

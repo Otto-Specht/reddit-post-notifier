@@ -23,3 +23,13 @@ type UserAboutData struct {
 	Name       string `json:"name"`
 	TotalKarma int64  `json:"total_karma"`
 }
+
+type UserSubmittedFeed struct {
+	Entries []UserSubmittedEntry `xml:"entry"`
+}
+
+type UserSubmittedEntry struct {
+	Id        string `xml:"id"`
+	Title     string `xml:"title"`
+	Published string `xml:"published"`
+}

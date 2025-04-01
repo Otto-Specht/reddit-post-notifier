@@ -18,3 +18,11 @@ func LoadEnv() {
 		}
 	}
 }
+
+func VerifyEnv() {
+	clientId := os.Getenv("CLIENT_ID")
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	if clientId == "" || clientSecret == "" {
+		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
+	}
+}

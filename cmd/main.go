@@ -13,18 +13,16 @@ func main() {
 	logger.Info("Initilizing...")
 
 	util.LoadEnv()
+	util.VerifyEnv()
 
 	userNames := GetUserNames()
 	logger.Debug("Users: " + strings.Join(userNames, ", "))
 
-	clientId := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	if clientId == "" || clientSecret == "" {
-		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
-	}
-
 	userNames = api.CheckIfUsersExistOrRemove(userNames)
 
+	for _, value := range userNames {
+		api.GetLatestPostId(value)
+	}
 }
 
 func GetUserNames() []string {

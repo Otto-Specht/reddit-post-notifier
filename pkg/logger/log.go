@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 type LogLevel int
@@ -50,7 +51,8 @@ func color(l LogLevel) string {
 }
 
 func log(level LogLevel, msg string) {
-	fmt.Printf("%s[%s] %s\033[0m\n", color(level), level.String(), msg)
+	t := time.Now().Format(time.RFC3339)
+	fmt.Printf("%s%s [%s] %s\033[0m\n", color(level), t, level.String(), msg)
 }
 
 func Debug(msg string) {
