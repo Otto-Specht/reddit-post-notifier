@@ -1,68 +1,55 @@
 package api
 
 import (
-	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 )
 
-type API struct {
-	AccessToken       string `json:"access_token"`
-	AccessTokenExpire int64  `json:"expires_in"`
+var api API = API{
+	httpClient:        http.Client{},
+	AccessToken:       "",
+	AccessTokenExpire: 0,
 }
 
-type AccessTokenResponse struct {
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
-	ExpiresIn   int64  `json:"expires_in"`
-	Scope       string `json:"scope"`
-}
+func CheckIfUsersExistOrRemove(userList []string) []string {
+	refreshTokenIfNeeded()
 
-func GenerateAccessToken(clientID, clientSecret string) API {
-	data := []byte(`grant_type=client_credentials`)
-	req, err := http.NewRequest("POST", "https://www.reddit.com/api/v1/access_token", bytes.NewBuffer(data))
-	if err != nil {
-		logger.FatalAndExit(err.Error())
+	existingUserList := []string{}
+
+	for _, value := range userList {
+		req, err := http.NewRequest("GET", "https://www.reddit.com/user/"+value+"/about.json", nil)
+		if err != nil {
+			logger.FatalAndExit(err.Error())
+		}
+		req.Header.Set("Authorization", api.AccessToken)
+		resp, err := api.httpClient.Do(req)
+		if err != nil {
+			logger.FatalAndExit(err.Error())
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == 200 {
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				logger.FatalAndExit(err.Error())
+			}
+
+			var userAboutResponse UserAbout
+			if err = json.Unmarshal(body, &userAboutResponse); err != nil {
+				logger.FatalAndExit(err.Error())
+			}
+
+			logger.Info(fmt.Sprintf("Adding user %s (Karma: %v)", userAboutResponse.Data.Name, userAboutResponse.Data.TotalKarma))
+
+			existingUserList = append(existingUserList, userAboutResponse.Data.Name)
+		} else {
+			logger.Warn(fmt.Sprintf("Cannot find user with name '%s', got status %s.", value, resp.Status))
+		}
 	}
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", "Basic "+basicAuth(clientID, clientSecret))
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		logger.FatalAndExit(err.Error())
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		logger.FatalAndExit(fmt.Sprintf("HTTP request failed with status code: %d", resp.StatusCode))
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		logger.FatalAndExit(err.Error())
-	}
-
-	var tokenResponse AccessTokenResponse
-	if err = json.Unmarshal(body, &tokenResponse); err != nil {
-		logger.FatalAndExit(err.Error())
-	}
-
-	logger.Debug("Successfully generated API access token")
-
-	return API{
-		AccessToken:       tokenResponse.AccessToken,
-		AccessTokenExpire: time.Now().Unix() + tokenResponse.ExpiresIn,
-	}
-}
-
-func basicAuth(clientID, clientSecret string) string {
-	return base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
+	return existingUserList
 }

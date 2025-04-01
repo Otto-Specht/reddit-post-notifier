@@ -22,7 +22,8 @@ func main() {
 	if clientId == "" || clientSecret == "" {
 		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
 	}
-	api.GenerateAccessToken(clientId, clientSecret)
+
+	userNames = api.CheckIfUsersExistOrRemove(userNames)
 
 }
 
