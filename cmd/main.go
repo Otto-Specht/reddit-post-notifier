@@ -16,10 +16,7 @@ func main() {
 	util.LoadEnv()
 	util.VerifyEnv()
 
-	userNames := GetUserNames()
-	logger.Debug("Users: " + strings.Join(userNames, ", "))
-
-	userNames = api.CheckIfUsersExistOrRemove(userNames)
+	userNames := api.CheckIfUsersExistOrRemove(GetUserNames())
 
 	if len(userNames) == 0 {
 		logger.FatalAndExit("No usernames to check...")

@@ -12,32 +12,39 @@ import (
 var lastPostIdPerUser = []UserPostId{}
 
 func Start(userNames []string) {
-	for _, userName := range userNames {
-		var lastPost api.UserSubmittedEntry
-
-		feed, err := api.GetUserFeed(userName, 1)
-		if err == nil && len(feed.Entries) != 0 {
-			lastPost = feed.Entries[0]
-		}
-
-		logger.Debug(fmt.Sprintf("Last post at %s from u/%s (%s)", lastPost.Published, userName, lastPost.Title))
-
-		lastPostIdPerUser = append(lastPostIdPerUser,
-			UserPostId{
-				User:   userName,
-				PostId: lastPost.Id,
-			})
-	}
+	updateLatestPostIdsForUsers(userNames)
 
 	interval := getPollInterval()
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
 	logger.Info(fmt.Sprintf("Checking %v user(s) every %s.", len(userNames), util.PrettyPrintDuration(interval)))
-	for {
-		select {
-		case <-ticker.C:
-			logger.Debug("Starting job..")
+
+	for range ticker.C {
+		logger.Info("Checking for new posts...")
+
+		var newPostsAllUsers []api.UserSubmittedEntry
+
+		for _, userlastPost := range lastPostIdPerUser {
+			newPosts := getNewEntries(userlastPost)
+
+			if len(newPosts) == 0 {
+				logger.Debug(fmt.Sprintf("No new posts from %s", userlastPost.User))
+				continue
+			}
+
+			logger.Debug(fmt.Sprintf("%v new posts from %s", len(newPosts), userlastPost.User))
+			newPostsAllUsers = append(newPostsAllUsers, newPosts...)
+
 		}
+
+		if len(newPostsAllUsers) == 0 {
+			logger.Info("Found no new posts")
+			continue
+		}
+
+		logger.Info(fmt.Sprintf("Found %v new posts", len(newPostsAllUsers)))
+
+		// TODO: Handle new post
 	}
 }
