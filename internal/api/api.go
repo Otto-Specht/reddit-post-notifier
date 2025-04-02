@@ -49,8 +49,8 @@ func CheckIfUsersExistOrRemove(userList []string) []string {
 	return existingUserList
 }
 
-func GetLatestPostId(user string) string {
-	req := buildRequest("GET", "https://oauth.reddit.com/user/"+user+"/submitted.rss?limit=1", nil)
+func GetUserFeed(user string, limit int) (UserSubmittedFeed, error) {
+	req := buildRequest("GET", fmt.Sprintf("https://oauth.reddit.com/user/%s/submitted.rss?limit=%v", user, limit), nil)
 	resp, err := api.httpClient.Do(req)
 	if err != nil {
 		logger.FatalAndExit(err.Error())
@@ -62,28 +62,19 @@ func GetLatestPostId(user string) string {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			logger.Error(fmt.Sprintf("Failed to get latest post id for user '%s', Error reading response body: %s.", user, err))
-			return ""
+			return UserSubmittedFeed{}, err
 		}
 
 		var feed UserSubmittedFeed
 		err = xml.Unmarshal(body, &feed)
 		if err != nil {
 			logger.Error(fmt.Sprintf("Failed to get latest post id for user '%s', Error parsing XML: %s.", user, err))
-			return ""
+			return UserSubmittedFeed{}, err
 		}
 
-		if len(feed.Entries) == 0 {
-			logger.Warn(fmt.Sprintf("User '%s' has no posts yet, the script will still work", user))
-			return ""
-		}
-
-		lastPost := feed.Entries[0]
-
-		logger.Debug(fmt.Sprintf("Lastest post from user u/%s: (%s) %s", user, lastPost.Published, lastPost.Title))
-
-		return lastPost.Id
+		return feed, nil
 	} else {
 		logger.Error(fmt.Sprintf("Failed to get latest post id for user '%s', got status %s.", user, resp.Status))
-		return ""
+		return UserSubmittedFeed{}, err
 	}
 }

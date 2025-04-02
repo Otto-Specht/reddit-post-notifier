@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
 	"github.com/Otto-Specht/reddit-post-notifier/internal/controller"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
@@ -18,7 +19,7 @@ func main() {
 	userNames := GetUserNames()
 	logger.Debug("Users: " + strings.Join(userNames, ", "))
 
-	//userNames = api.CheckIfUsersExistOrRemove(userNames)
+	userNames = api.CheckIfUsersExistOrRemove(userNames)
 
 	if len(userNames) == 0 {
 		logger.FatalAndExit("No usernames to check...")
