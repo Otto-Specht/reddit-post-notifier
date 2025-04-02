@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/joho/godotenv"
@@ -24,5 +25,21 @@ func VerifyEnv() {
 	clientSecret := os.Getenv("CLIENT_SECRET")
 	if clientId == "" || clientSecret == "" {
 		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
+	}
+}
+
+func PrettyPrintDuration(d time.Duration) string {
+	hours := d / time.Hour
+	d -= hours * time.Hour
+	minutes := d / time.Minute
+	d -= minutes * time.Minute
+	seconds := d / time.Second
+
+	if hours > 0 {
+		return fmt.Sprintf("%dh", hours)
+	} else if minutes > 0 {
+		return fmt.Sprintf("%dm", minutes)
+	} else {
+		return fmt.Sprintf("%ds", seconds)
 	}
 }

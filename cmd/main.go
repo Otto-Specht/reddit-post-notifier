@@ -4,13 +4,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
+	"github.com/Otto-Specht/reddit-post-notifier/internal/controller"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
 )
 
 func main() {
-	logger.Info("Initilizing...")
+	logger.Info("Starting...")
 
 	util.LoadEnv()
 	util.VerifyEnv()
@@ -18,11 +18,9 @@ func main() {
 	userNames := GetUserNames()
 	logger.Debug("Users: " + strings.Join(userNames, ", "))
 
-	userNames = api.CheckIfUsersExistOrRemove(userNames)
+	//userNames = api.CheckIfUsersExistOrRemove(userNames)
 
-	for _, value := range userNames {
-		api.GetLatestPostId(value)
-	}
+	controller.Start([]string{})
 }
 
 func GetUserNames() []string {
