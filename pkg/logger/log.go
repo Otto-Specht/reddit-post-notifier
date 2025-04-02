@@ -3,10 +3,8 @@ package logger
 import (
 	"fmt"
 	"os"
-	"time"
+	"strings"
 )
-
-type LogLevel int
 
 const (
 	DEBUG LogLevel = iota
@@ -16,43 +14,31 @@ const (
 	FATAL
 )
 
-func (l LogLevel) String() string {
-	switch l {
-	case DEBUG:
-		return "DBG"
-	case INFO:
-		return "INF"
-	case WARN:
-		return "WRN"
-	case ERROR:
-		return "ERR"
-	case FATAL:
-		return "FTL"
-	default:
-		return "UKN"
-	}
-}
+var logLevel LogLevel = DEBUG
 
-func color(l LogLevel) string {
-	switch l {
-	case DEBUG:
-		return "\033[37m"
-	case INFO:
-		return "\033[36m"
-	case WARN:
-		return "\033[33m"
-	case ERROR:
-		return "\033[31m"
-	case FATAL:
-		return "\033[31m"
+func SetLogLevel(level string) {
+	switch strings.ToLower(level) {
+	case "":
+	case "dbg":
+	case "debug":
+		logLevel = DEBUG
+		return
+	case "inf":
+	case "info":
+		logLevel = INFO
+		return
+	case "wrn":
+	case "warn":
+		logLevel = WARN
+		return
+	case "err":
+	case "error":
+		logLevel = ERROR
+		return
 	default:
-		return ""
+		Warn(fmt.Sprintf("Unknown log level %s. Using DEBUG", level))
+		return
 	}
-}
-
-func log(level LogLevel, msg string) {
-	t := time.Now().Format(time.RFC3339)
-	fmt.Printf("%s%s [%s] %s\033[0m\n", color(level), t, level.String(), msg)
 }
 
 func Debug(msg string) {

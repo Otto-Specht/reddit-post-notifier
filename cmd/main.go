@@ -20,7 +20,11 @@ func main() {
 
 	//userNames = api.CheckIfUsersExistOrRemove(userNames)
 
-	controller.Start([]string{})
+	if len(userNames) == 0 {
+		logger.FatalAndExit("No usernames to check...")
+	}
+
+	controller.Start(userNames)
 }
 
 func GetUserNames() []string {

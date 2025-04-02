@@ -12,11 +12,13 @@ import (
 func LoadEnv() {
 	// Allow skipping of .env file eg. for Docker
 	if os.Getenv("SKIP_ENV") != "true" {
-		logger.Debug("Loading env file...")
 		err := godotenv.Load(".env")
+		logger.SetLogLevel(os.Getenv("LOG_LEVEL"))
 		if err != nil {
 			logger.Warn(fmt.Sprintf("Failed to load env file: %s", err.Error()))
 		}
+	} else {
+		logger.SetLogLevel(os.Getenv("LOG_LEVEL"))
 	}
 }
 

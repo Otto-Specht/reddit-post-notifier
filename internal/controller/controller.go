@@ -15,8 +15,7 @@ func Start(userNames []string) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	logger.Debug(fmt.Sprintf("Using poll interval: %s", util.PrettyPrintDuration(interval)))
-
+	logger.Info(fmt.Sprintf("Checking %v user(s) every %s.", len(userNames), util.PrettyPrintDuration(interval)))
 	for {
 		select {
 		case <-ticker.C:
