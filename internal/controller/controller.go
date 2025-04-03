@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
+	"github.com/Otto-Specht/reddit-post-notifier/internal/redditapi"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
 )
@@ -23,7 +23,7 @@ func Start(userNames []string) {
 	for range ticker.C {
 		logger.Info("Checking for new posts...")
 
-		var newPostsAllUsers []api.UserSubmittedEntry
+		var newPostsAllUsers []redditapi.UserSubmittedEntry
 
 		for _, userlastPost := range lastPostIdPerUser {
 			newPosts := getNewEntries(userlastPost)

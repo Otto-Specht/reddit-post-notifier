@@ -1,4 +1,4 @@
-package api
+package redditapi
 
 import (
 	"bytes"
@@ -54,7 +54,7 @@ func generateNewAccessToken() {
 
 	logger.Debug("Successfully generated new API access token")
 
-	api = API{
+	api = RedditApi{
 		AccessToken:       tokenResponse.AccessToken,
 		AccessTokenExpire: time.Now().Unix() + tokenResponse.ExpiresIn,
 	}

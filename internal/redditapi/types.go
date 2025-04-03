@@ -1,8 +1,8 @@
-package api
+package redditapi
 
 import "net/http"
 
-type API struct {
+type RedditApi struct {
 	httpClient        http.Client
 	AccessToken       string
 	AccessTokenExpire int64

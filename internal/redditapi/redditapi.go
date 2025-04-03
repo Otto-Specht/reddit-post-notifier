@@ -1,4 +1,4 @@
-package api
+package redditapi
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 )
 
-var api API = API{
+var api RedditApi = RedditApi{
 	httpClient:        http.Client{},
 	AccessToken:       "",
 	AccessTokenExpire: 0,

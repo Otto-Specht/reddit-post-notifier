@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
 	"github.com/Otto-Specht/reddit-post-notifier/internal/controller"
+	"github.com/Otto-Specht/reddit-post-notifier/internal/redditapi"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
 )
@@ -16,7 +16,7 @@ func main() {
 	util.LoadEnv()
 	util.VerifyEnv()
 
-	userNames := api.CheckIfUsersExistOrRemove(GetUserNames())
+	userNames := redditapi.CheckIfUsersExistOrRemove(GetUserNames())
 
 	if len(userNames) == 0 {
 		logger.FatalAndExit("No usernames to check...")

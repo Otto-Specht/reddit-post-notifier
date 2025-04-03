@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Otto-Specht/reddit-post-notifier/internal/api"
+	"github.com/Otto-Specht/reddit-post-notifier/internal/redditapi"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
 )
@@ -42,9 +42,9 @@ func getPollInterval() time.Duration {
 
 func updateLatestPostIdsForUsers(userNames []string) {
 	for _, userName := range userNames {
-		var lastPost api.UserSubmittedEntry
+		var lastPost redditapi.UserSubmittedEntry
 
-		feed, err := api.GetUserFeed(userName, 1)
+		feed, err := redditapi.GetUserFeed(userName, 1)
 		if err == nil && len(feed.Entries) != 0 {
 			lastPost = feed.Entries[0]
 		}
@@ -59,20 +59,20 @@ func updateLatestPostIdsForUsers(userNames []string) {
 	}
 }
 
-func getNewEntries(userlastPost UserPostId) []api.UserSubmittedEntry {
+func getNewEntries(userlastPost UserPostId) []redditapi.UserSubmittedEntry {
 	limit := 5
 
-	feed, err := api.GetUserFeed(userlastPost.User, limit)
+	feed, err := redditapi.GetUserFeed(userlastPost.User, limit)
 	if err != nil {
 		logger.Warn(fmt.Sprintf("Skipping user %s", userlastPost.User))
-		return []api.UserSubmittedEntry{}
+		return []redditapi.UserSubmittedEntry{}
 	}
 
 	if len(feed.Entries) == 0 || feed.Entries[0].Id == userlastPost.PostId {
-		return []api.UserSubmittedEntry{}
+		return []redditapi.UserSubmittedEntry{}
 	}
 
-	var newEntries []api.UserSubmittedEntry
+	var newEntries []redditapi.UserSubmittedEntry
 
 	for _, entry := range feed.Entries {
 		if entry.Id != userlastPost.PostId {
