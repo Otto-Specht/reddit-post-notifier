@@ -1,0 +1,5 @@
+package discordapi
+
+func generateNewAccessToken() {
+
+}
