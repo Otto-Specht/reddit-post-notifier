@@ -21,10 +21,10 @@ func generateNewAccessToken() {
 	}
 
 	// Loading from env to allow secret rotation and to make life easier
-	clientId := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
+	clientId := os.Getenv("REDDIT_CLIENT_ID")
+	clientSecret := os.Getenv("REDDIT_CLIENT_SECRET")
 	if clientId == "" || clientSecret == "" {
-		logger.FatalAndExit("Missing CLIENT_ID and/or CLIENT_SECRET")
+		logger.FatalAndExit("Missing REDDIT_CLIENT_ID and/or REDDIT_CLIENT_SECRET")
 	}
 
 	basicAuth := base64.StdEncoding.EncodeToString([]byte(clientId + ":" + clientSecret))
