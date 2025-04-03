@@ -23,10 +23,16 @@ func LoadEnv() {
 }
 
 func VerifyEnv() {
-	clientId := os.Getenv("REDDIT_CLIENT_ID")
-	clientSecret := os.Getenv("REDDIT_CLIENT_SECRET")
-	if clientId == "" || clientSecret == "" {
+	redditClientId := os.Getenv("REDDIT_CLIENT_ID")
+	redditClientSecret := os.Getenv("REDDIT_CLIENT_SECRET")
+	if redditClientId == "" || redditClientSecret == "" {
 		logger.FatalAndExit("Missing REDDIT_CLIENT_ID and/or REDDIT_CLIENT_SECRET")
+	}
+
+	discordBotToken := os.Getenv("DISCORD_BOT_TOKEN")
+	discordChannelId := os.Getenv("DISCORD_CHANNEL_ID")
+	if discordBotToken == "" || discordChannelId == "" {
+		logger.FatalAndExit("Missing DISCORD_BOT_TOKEN and/or DISCORD_CHANNEL_ID")
 	}
 }
 
