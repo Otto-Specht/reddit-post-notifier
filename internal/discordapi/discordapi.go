@@ -1,10 +1,11 @@
 package discordapi
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 )
@@ -23,14 +24,19 @@ func SendServerMessage(message string) {
 	}
 
 	url := fmt.Sprintf("https://discord.com/api/v10/channels/%s/messages", discordChannelId)
-	payload := strings.NewReader(fmt.Sprintf(`{"content": "%s"}`, message))
-	req, err := http.NewRequest("post", url, payload)
+	jsonData, err := json.Marshal(map[string]string{"content": message})
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to create discord message request data: %s", err.Error()))
+		return
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed to create discord message request: %s", err.Error()))
 		return
 	}
 
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bot "+discordBotToken)
 
 	resp, err := api.httpClient.Do(req)

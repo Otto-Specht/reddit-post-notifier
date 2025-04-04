@@ -32,11 +32,21 @@ type UserSubmittedEntry struct {
 	Id        string      `xml:"id"`
 	Title     string      `xml:"title"`
 	Published string      `xml:"published"`
-	Link      string      `xml:"link"`
+	Link      Link        `xml:"link"`
 	Author    EntryAuthor `xml:"author"`
+	Category  Category    `xml:"category"`
 }
 
 type EntryAuthor struct {
 	Name string `xml:"name"`
 	Uri  string `xml:"uri"`
+}
+
+type Link struct {
+	Href string `xml:"href,attr"`
+}
+
+type Category struct {
+	Term  string `xml:"term,attr"`
+	Label string `xml:"label,attr"`
 }

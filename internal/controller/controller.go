@@ -26,7 +26,7 @@ func Start(userNames []string) {
 
 		var newPostsAllUsers []redditapi.UserSubmittedEntry
 
-		for _, userlastPost := range lastPostIdPerUser {
+		for idx, userlastPost := range lastPostIdPerUser {
 			newPosts := getNewEntries(userlastPost)
 
 			if len(newPosts) == 0 {
@@ -37,6 +37,7 @@ func Start(userNames []string) {
 			logger.Debug(fmt.Sprintf("%v new posts from %s", len(newPosts), userlastPost.User))
 			newPostsAllUsers = append(newPostsAllUsers, newPosts...)
 
+			lastPostIdPerUser[idx] = UserPostId{User: userlastPost.User, PostId: newPosts[0].Id}
 		}
 
 		if len(newPostsAllUsers) == 0 {

@@ -61,7 +61,15 @@ func BuildNotifyMessage(posts []redditapi.UserSubmittedEntry) string {
 	msg := fmt.Sprintf("@everyone: Found %v new post(s):\n", len(posts))
 
 	for _, post := range posts {
-		msg += fmt.Sprintf("[%s](%s) posted [%s](%s)\n", post.Author.Name, post.Author.Uri, post.Title, post.Link)
+		msg += fmt.Sprintf(
+			"[%s](%s) posted in [%s](https://reddit.com/%s): [%s](%s)\n",
+			post.Author.Name,
+			post.Author.Uri,
+			post.Category.Label,
+			post.Category.Label,
+			post.Title,
+			post.Link.Href,
+		)
 	}
 
 	return msg
