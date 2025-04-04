@@ -1,0 +1,9 @@
+name: reddit-post-notifier
+
+services:
+  main:
+    container_name: main
+    restart: on-failure
+    build: .
+    env_file:
+      - .env
