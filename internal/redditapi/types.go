@@ -29,7 +29,14 @@ type UserSubmittedFeed struct {
 }
 
 type UserSubmittedEntry struct {
-	Id        string `xml:"id"`
-	Title     string `xml:"title"`
-	Published string `xml:"published"`
+	Id        string      `xml:"id"`
+	Title     string      `xml:"title"`
+	Published string      `xml:"published"`
+	Link      string      `xml:"link"`
+	Author    EntryAuthor `xml:"author"`
+}
+
+type EntryAuthor struct {
+	Name string `xml:"name"`
+	Uri  string `xml:"uri"`
 }

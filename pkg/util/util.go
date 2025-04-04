@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Otto-Specht/reddit-post-notifier/internal/redditapi"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/joho/godotenv"
 )
@@ -50,4 +51,18 @@ func PrettyPrintDuration(d time.Duration) string {
 	} else {
 		return fmt.Sprintf("%ds", seconds)
 	}
+}
+
+func BuildNotifyMessage(posts []redditapi.UserSubmittedEntry) string {
+	if len(posts) == 0 {
+		return ""
+	}
+
+	msg := fmt.Sprintf("@everyone: Found %v new post(s):\n", len(posts))
+
+	for _, post := range posts {
+		msg += fmt.Sprintf("[%s](%s) posted [%s](%s)\n", post.Author.Name, post.Author.Uri, post.Title, post.Link)
+	}
+
+	return msg
 }

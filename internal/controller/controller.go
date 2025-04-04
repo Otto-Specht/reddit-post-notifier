@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Otto-Specht/reddit-post-notifier/internal/discordapi"
 	"github.com/Otto-Specht/reddit-post-notifier/internal/redditapi"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/logger"
 	"github.com/Otto-Specht/reddit-post-notifier/pkg/util"
@@ -43,8 +44,8 @@ func Start(userNames []string) {
 			continue
 		}
 
-		logger.Info(fmt.Sprintf("Found %v new posts", len(newPostsAllUsers)))
+		logger.Info(fmt.Sprintf("Found %v new posts. Sending discord message...", len(newPostsAllUsers)))
 
-		// TODO: Handle new post
+		discordapi.SendServerMessage(util.BuildNotifyMessage(newPostsAllUsers))
 	}
 }
