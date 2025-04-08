@@ -44,7 +44,7 @@ jobs:
       uses: actions/create-release@v1
       with:
         tag_name: ${{ env.short_sha }}
-        release_name: Release ${{ github.ref_name }}-${{ env.short_sha }}
+        release_name: ${{ github.ref_name }}-${{ env.short_sha }}
         draft: false
         prerelease: false
       env:
