@@ -27,16 +27,28 @@ jobs:
       run: |
         docker save reddit-post-notifier:latest -o reddit-post-notifier.tar
 
+    - name: Extract Short Commit SHA
+      id: extract_short_sha
+      run: echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+    
+    - name: Push Tag
+      run: |
+        git tag ${{ env.short_sha }}
+        git push origin ${{ env.short_sha }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     - name: Create GitHub Release and Upload Tarball
       id: create_release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.sha }}
-        release_name: Release ${{ github.sha }}
+        tag_name: ${{ env.short_sha }}
+        release_name: Release ${{ github.ref_name }}-${{ env.short_sha }}
         draft: false
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
 
     - name: Upload Tarball to Release
       uses: actions/upload-release-asset@v1
