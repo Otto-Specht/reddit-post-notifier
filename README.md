@@ -1,5 +1,8 @@
-# Reddit post nofifier
+# Reddit post notifier
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Otto-Specht/reddit-post-notifier)
+![GitHub release (latest by date)](https://github.com/Otto-Specht/reddit-post-notifier/actions/workflows/release.yml/badge.svg)
 
+## Overview:
 This is a project made in go which polls a reddits user account for new posts and sends a discord message on a server.
 
 ## Configuration:
