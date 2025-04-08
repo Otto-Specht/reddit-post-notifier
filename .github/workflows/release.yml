@@ -2,6 +2,7 @@ name: Build and Release Docker Image
 
 permissions:
   contents: write
+  actions: write
 
 on:
   push:
@@ -57,3 +58,5 @@ jobs:
         asset_path: ./reddit-post-notifier.tar
         asset_name: reddit-post-notifier.tar
         asset_content_type: application/x-tar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
